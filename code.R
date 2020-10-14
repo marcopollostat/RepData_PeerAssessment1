@@ -1,19 +1,19 @@
 
 library(data.table)
 library(tidyverse)
-library(lubridate)
+#library(lubridate)
 
 d <- fread('gunzip -cq activity.zip')
 # set date variable as date format
 d$date <- as.Date(d$date)
 
-d[, month:= as.factor(month(d$date))]
-d[, day:= as.factor(day(d$date))]
-table(d$day)
+#d[, month:= as.factor(month(d$date))]
+#d[, day:= as.factor(day(d$date))]
+#table(d$day)
 
-dl <- d[, sum(steps), by = day]
-ggplot(dl, aes(V1))+
-        geom_histogram()
+#dl <- d[, sum(steps), by = day]
+#ggplot(dl, aes(V1))+
+#        geom_histogram()
 
 
 sl <- d[, c(lapply(.SD, sum, na.rm = FALSE)), .SDcols = c("steps"), by = .(date)] 
@@ -56,59 +56,6 @@ month(d$date[15000])
 table(day(d$date))
 sum(month(d$date)==10)
 sum(month(d$date)==11)
-
-
-# total steps by day
-daily <- c()
-daily[0] <- 0
-day(d$date[0]) <- "01"
-#dim(d)[1]
-for (i in 290:556) {
-        #if(month(d$date)==10){
-                if(day(d$date[i]) == day(d$date[i-1])){
-                        #if(!is.na(d$steps)){
-                                daily[i] <- daily[i-1] + d$steps[i]
-                        #}
-                                                     
-                }
-        #}
- print(daily)       
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
