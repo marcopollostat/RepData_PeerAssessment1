@@ -27,6 +27,9 @@ int <- d[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c("steps"), by = .(inte
 ggplot(int, aes(x = interval, y = steps)) +
         geom_line()
 
+#int[steps == max(steps), .(max_interval = interval)]
+int[which.max(int$steps), 1]
+
 ###############################################################
 # check to see what proportion of the observations are missing
 ###############################################################
