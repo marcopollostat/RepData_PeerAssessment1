@@ -4,7 +4,7 @@ library(tidyverse)
 
 
 d <- fread('gunzip -cq activity.zip')
-# set date variable as date format
+
 d$date <- as.Date(d$date)
 
 sl <- d[, c(lapply(.SD, sum, na.rm = FALSE)), .SDcols = c("steps"), by = .(date)] 
@@ -22,9 +22,15 @@ int[which.max(int$steps), 1]
 
 sum(is.na(d$steps))
 
-d[is.na(steps), "steps"] <- d[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c("steps")]
+d[is.na(steps), "steps"] <- d[, c(lapply(.SD, median, na.rm = TRUE)), .SDcols = c("steps")]
 
+data.table::fwrite(x = d, file = "tidyData.csv", quote = FALSE)
+#a <- read_csv("tidyData.csv")
+#summary(a)
 
+totalSteps <- d[, c(lapply(.SD, sum)), .SDcols = c("steps"), by = .(date)] 
+
+totalSteps[, .(Mean_Steps = mean(steps), Median_Steps = median(steps))]
 
 
 
