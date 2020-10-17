@@ -7,6 +7,14 @@ output:
 
 
 ## Loading and preprocessing the data
+Unzip data to obtain a csv file.
+
+```{r}
+library("data.table")
+library(ggplot2)
+d <- fread('gunzip -cq activity.zip')
+d$date <- as.Date(d$date)
+```
 
 
 
