@@ -14,8 +14,8 @@ library("data.table")
 library(ggplot2)
 d <- fread('gunzip -cq activity.zip')
 d$date <- as.Date(d$date)
+sl <- d[, c(lapply(.SD, sum, na.rm = FALSE)), .SDcols = c("steps"), by = .(date)]
 ```
-
 
 
 ## What is mean total number of steps taken per day?
