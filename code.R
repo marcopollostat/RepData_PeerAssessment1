@@ -1,11 +1,14 @@
 
+rm(list = ls())
+
 library(data.table)
 library(tidyverse)
 
-
-d <- fread('gunzip -cq activity.zip')
-
+unzip("activity.zip")
+d <- fread('activity.csv')
+str(d)
 d$date <- as.Date(d$date)
+str(d)
 
 sl <- d[, c(lapply(.SD, sum, na.rm = FALSE)), .SDcols = c("steps"), by = .(date)] 
 ggplot(sl, aes(x = steps)) +
@@ -26,7 +29,7 @@ d[is.na(steps), "steps"] <- d[, c(lapply(.SD, median, na.rm = TRUE)), .SDcols = 
 
 data.table::fwrite(x = d, file = "tidyData.csv", quote = FALSE)
 #a <- read_csv("tidyData.csv")
-#summary(a)
+#summary(a); str(a)
 
 totalSteps <- d[, c(lapply(.SD, sum)), .SDcols = c("steps"), by = .(date)] 
 
