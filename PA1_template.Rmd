@@ -103,9 +103,41 @@ totalSteps <- d[, c(lapply(.SD, sum)), .SDcols = c("steps"), by = .(date)]
 mean(totalSteps$steps)
 # median
 median(totalSteps$steps)
+
 ```
 
+```{r}
+# histogram of the total number of steps taken each day
+ggplot(totalSteps, aes(x = steps)) + geom_histogram(fill = "blue", binwidth = 1000)
+```
 
+These values differ from the estimates from the first part of the assignment:
+
+First part (with NAs) | Second part (filling NAs with median)
+--- | ---
+mean = 10766.19 |  mean = 10766.19
+median = 10765 |  median = 10395
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+
+```{r}
+d[, date := as.POSIXct(date, format = "%Y-%m-%d")]
+
+d[, `Day of Week`:= weekdays(x = date)]
+
+d[grepl(pattern = "segunda-feira|terça-feira|quarta-feira|quinta-feira|sexta-feira", x = `Day of Week`), "weekday or weekend"] <- "weekday"
+d[grepl(pattern = "sábado|domingo", x = `Day of Week`), "weekday or weekend"] <- "weekend"
+d[, `weekday or weekend` := as.factor(`weekday or weekend`)]
+
+```
+
+2. Make a panel plot containing a time series plot (i.e. 𝚝𝚢𝚙𝚎 = "𝚕") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+
+```{r}
+d[is.na(steps), "steps"] <- d[, c(lapply(.SD, median, na.rm = TRUE)), .SDcols = c("steps")]
+int <- d[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c("steps"), by = .(interval, 'weekday or weekend')] 
+ggplot(int , aes(x = interval , y = steps, color='weekday or weekend')) + geom_line() + facet_wrap(~'weekday or weekend' , ncol = 1, nrow=2)
+```
+
