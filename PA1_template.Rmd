@@ -123,12 +123,14 @@ median = 10765 |  median = 10395
 1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
 ```{r}
+Sys.setlocale("LC_TIME", "C") # change language: From Portuguese (Brazil) to English.
+
 d[, date := as.POSIXct(date, format = "%Y-%m-%d")]
 
 d[, `Day of Week`:= weekdays(x = date)]
 
-d[grepl(pattern = "segunda-feira|terça-feira|quarta-feira|quinta-feira|sexta-feira", x = `Day of Week`), "weekday or weekend"] <- "weekday"
-d[grepl(pattern = "sábado|domingo", x = `Day of Week`), "weekday or weekend"] <- "weekend"
+d[grepl(pattern = "Monday|Tuesday|Wednesday|Thursday|Friday", x = `Day of Week`), "weekday or weekend"] <- "weekday"
+d[grepl(pattern = "Saturday|Sunday", x = `Day of Week`), "weekday or weekend"] <- "weekend"
 d[, `weekday or weekend` := as.factor(`weekday or weekend`)]
 
 ```
@@ -137,7 +139,7 @@ d[, `weekday or weekend` := as.factor(`weekday or weekend`)]
 
 ```{r}
 d[is.na(steps), "steps"] <- d[, c(lapply(.SD, median, na.rm = TRUE)), .SDcols = c("steps")]
-int <- d[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c("steps"), by = .(interval, 'weekday or weekend')] 
-ggplot(int , aes(x = interval , y = steps, color='weekday or weekend')) + geom_line() + facet_wrap(~'weekday or weekend' , ncol = 1, nrow=2)
+int <- d[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c("steps"), by = .(interval, "weekday or weekend")] 
+ggplot(d , aes(x = interval , y = steps, color='weekday or weekend')) + geom_line() + facet_wrap(~'weekday or weekend' , ncol = 1, nrow=2)
 ```
 
